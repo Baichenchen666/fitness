@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.BodyMapper">
+    
+    <sql id="table_name">body</sql>
+    
+	<sql id="bodyColumns">
+		a.id AS "id",
+		a.userid AS "userid",
+		a.height AS "height",
+		a.weight AS "weight",
+		a.bodyfat AS "bodyfat",
+		a.bmi AS "bmi",
+		a.bust AS "bust",
+		a.bigarm AS "bigarm",
+		a.forearm AS "forearm",
+		a.waistline AS "waistline",
+		a.hipline AS "hipline",
+		a.thigh AS "thigh",
+		a.shank AS "shank",
+		a.time AS "time"
+	</sql>
+	
+	<sql id="bodyJoins">
+	left join user b on a.userid = b.id
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Body">
+		SELECT b.name as username,
+			<include refid="bodyColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="bodyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Body">
+		SELECT b.name as username,
+			<include refid="bodyColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="bodyJoins"/>
+		<where>
+			
+			<if test="body.userid != null and body.userid != ''">
+				AND a.userid = #{body.userid}
+			</if>
+		</where>
+		ORDER BY a.id ASC
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Body">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			userid,
+			height,
+			weight,
+			bodyfat,
+			bmi,
+			bust,
+			bigarm,
+			forearm,
+			waistline,
+			hipline,
+			thigh,
+			shank,
+			time
+		) VALUES (
+			#{id},
+			#{userid},
+			#{height},
+			#{weight},
+			#{bodyfat},
+			#{bmi},
+			#{bust},
+			#{bigarm},
+			#{forearm},
+			#{waistline},
+			#{hipline},
+			#{thigh},
+			#{shank},
+			#{time}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Body">
+		UPDATE <include refid="table_name"/> SET 	
+			userid = #{userid},
+			height = #{height},
+			weight = #{weight},
+			bodyfat = #{bodyfat},
+			bmi = #{bmi},
+			bust = #{bust},
+			bigarm = #{bigarm},
+			forearm = #{forearm},
+			waistline = #{waistline},
+			hipline = #{hipline},
+			thigh = #{thigh},
+			shank = #{shank},
+			time = #{time}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

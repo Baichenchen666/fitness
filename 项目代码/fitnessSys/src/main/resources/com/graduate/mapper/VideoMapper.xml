@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.VideoMapper">
+    
+    <sql id="table_name">video</sql>
+    
+	<sql id="videoColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.strength AS "strength",
+		a.apparatus AS "apparatus",
+		a.duration AS "duration",
+		a.position AS "position",
+		a.consume AS "consume",
+		a.info AS "info",
+		a.full AS "full",
+		a.partial AS "partial",
+		a.num AS "num"
+	</sql>
+	
+	<sql id="videoJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Video">
+		SELECT 
+			<include refid="videoColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="videoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Video">
+		SELECT 
+			<include refid="videoColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="videoJoins"/>
+		<where>
+			
+			<if test="video.title != null and video.title != ''">
+				AND a.title LIKE concat('%',#{video.title},'%')
+			</if>
+		</where>
+		ORDER BY a.id ASC
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Video">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			title,
+			strength,
+			apparatus,
+			duration,
+			position,
+			consume,
+			info,
+			full,
+			partial,
+			num
+		) VALUES (
+			#{id},
+			#{title},
+			#{strength},
+			#{apparatus},
+			#{duration},
+			#{position},
+			#{consume},
+			#{info},
+			#{full},
+			#{partial},
+			#{num}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Video">
+		UPDATE <include refid="table_name"/> SET 	
+			title = #{title},
+			strength = #{strength},
+			apparatus = #{apparatus},
+			duration = #{duration},
+			position = #{position},
+			consume = #{consume},
+			info = #{info},
+			<if test="full != null and full != ''">
+			full = #{full},
+			</if>
+			<if test="partial != null and partial != ''">
+			partial = #{partial},
+			</if>
+			num = #{num}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,46 @@
+package com.graduate.service;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.apache.commons.lang3.StringUtils;
+import com.graduate.bean.Food;
+import com.graduate.mapper.FoodMapper;
+
+/**
+ * 食物三大元素对照表Service
+ */
+@Service
+public class FoodService{
+
+	@Autowired
+    private FoodMapper foodMapper;
+    
+    // 通过id获取Food
+	public Food get(String id) {
+		return foodMapper.get(id);
+	}
+	
+	// 通过参数获取Food列表
+	public List<Food> findList(Food food) {
+		return foodMapper.findList(food);
+	}
+	
+	public int save(Food food) {
+		if(StringUtils.isBlank(food.getId())) {
+			// 当id为空时，操作为新增，获取唯一标识id
+    		food.setId(UUID.randomUUID().toString().replace("-", "").toLowerCase());
+    		return foodMapper.insert(food);
+    	} else {
+    		// 当id不为空是，操作为修改
+    		return foodMapper.update(food);
+    	}
+	}
+	
+	public int delete(String id) {
+		return foodMapper.delete(id);
+	}
+	
+}

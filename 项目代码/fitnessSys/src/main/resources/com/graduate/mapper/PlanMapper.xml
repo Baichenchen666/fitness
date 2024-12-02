@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.PlanMapper">
+    
+    <sql id="table_name">plan</sql>
+    
+	<sql id="planColumns">
+		a.id AS "id",
+		a.place AS "place",
+		a.gender AS "gender",
+		a.type AS "type",
+		a.level AS "level",
+		a.proposal AS "proposal",
+		a.rhythm AS "rhythm"
+	</sql>
+	
+	<sql id="planJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Plan">
+		SELECT 
+			<include refid="planColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="planJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Plan">
+		SELECT 
+			<include refid="planColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="planJoins"/>
+		<where>
+			
+			<if test="plan.place != null and plan.place != ''">
+				AND a.place = #{plan.place}
+			</if>
+			<if test="plan.gender != null and plan.gender != ''">
+				AND a.gender = #{plan.gender}
+			</if>
+			<if test="plan.type != null and plan.type != ''">
+				AND a.type = #{plan.type}
+			</if>
+			<if test="plan.level != null and plan.level != ''">
+				AND a.level = #{plan.level}
+			</if>
+		</where>
+		ORDER BY a.place,a.type desc,a.gender desc,a.level
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Plan">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			place,
+			gender,
+			type,
+			level,
+			proposal,
+			rhythm
+		) VALUES (
+			#{id},
+			#{place},
+			#{gender},
+			#{type},
+			#{level},
+			#{proposal},
+			#{rhythm}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Plan">
+		UPDATE <include refid="table_name"/> SET 	
+			place = #{place},
+			gender = #{gender},
+			type = #{type},
+			level = #{level},
+			proposal = #{proposal},
+			rhythm = #{rhythm}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

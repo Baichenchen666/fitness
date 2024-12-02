@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.FoodMapper">
+    
+    <sql id="table_name">food</sql>
+    
+	<sql id="foodColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.type AS "type",
+		a.energy AS "energy",
+		a.protein AS "protein",
+		a.fat AS "fat",
+		a.carbohydrate AS "carbohydrate"
+	</sql>
+	
+	<sql id="foodJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Food">
+		SELECT 
+			<include refid="foodColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="foodJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Food">
+		SELECT 
+			<include refid="foodColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="foodJoins"/>
+		<where>
+			
+			<if test="food.name != null and food.name != ''">
+				AND a.name LIKE concat('%',#{food.name},'%')
+			</if>
+			<if test="food.type != null and food.type != ''">
+				AND a.type LIKE concat('%',#{food.type},'%')
+			</if>
+		</where>
+		ORDER BY a.type ASC
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Food">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			name,
+			type,
+			energy,
+			protein,
+			fat,
+			carbohydrate
+		) VALUES (
+			#{id},
+			#{name},
+			#{type},
+			#{energy},
+			#{protein},
+			#{fat},
+			#{carbohydrate}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Food">
+		UPDATE <include refid="table_name"/> SET 	
+			name = #{name},
+			type = #{type},
+			energy = #{energy},
+			protein = #{protein},
+			fat = #{fat},
+			carbohydrate = #{carbohydrate}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

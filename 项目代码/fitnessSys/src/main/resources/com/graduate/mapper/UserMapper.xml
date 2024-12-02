@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.UserMapper">
+    
+    <sql id="table_name">user</sql>
+    
+	<sql id="userColumns">
+		a.id AS "id",
+		a.phone AS "phone",
+		a.name AS "name",
+		a.gender AS "gender",
+		a.paytype AS "paytype",
+		a.autograph AS "autograph",
+		a.background AS "background",
+		a.auth AS "auth",
+		a.password AS "password",
+		a.flag AS "flag"
+	</sql>
+	
+	<sql id="userJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.User">
+		SELECT 
+			<include refid="userColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="userJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.User">
+		SELECT 
+			<include refid="userColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="userJoins"/>
+		<where>
+			
+			<if test="user.phone != null and user.phone != ''">
+				AND a.phone = #{user.phone}
+			</if>
+			<if test="user.name != null and user.name != ''">
+				AND a.name LIKE concat('%',#{user.name},'%')
+			</if>
+			<if test="user.auth != null and user.auth != ''">
+				AND a.auth = #{user.auth}
+			</if>
+			<if test="user.password != null and user.password != ''">
+				AND a.password = #{user.password}
+			</if>
+		</where>
+		ORDER BY a.id ASC
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.User">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			phone,
+			name,
+			gender,
+			paytype,
+			autograph,
+			background,
+			auth,
+			password,
+			flag
+		) VALUES (
+			#{id},
+			#{phone},
+			#{name},
+			#{gender},
+			#{paytype},
+			#{autograph},
+			#{background},
+			#{auth},
+			#{password},
+			#{flag}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.User">
+		UPDATE <include refid="table_name"/> SET 	
+			phone = #{phone},
+			name = #{name},
+			gender = #{gender},
+			paytype = #{paytype},
+			autograph = #{autograph},
+			background = #{background},
+			auth = #{auth},
+			password = #{password},
+			flag = #{flag}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+	<select id="identity" resultType="com.graduate.bean.User">
+        SELECT 
+         <include refid="userColumns"></include>
+        FROM
+         <include refid="table_name"/> a
+         <include refid="userJoins"/>
+         <where>
+			
+			<if test="user.phone != null and user.phone != ''">
+				AND a.phone = #{user.phone}
+			</if>
+			<if test="user.name != null and user.name != ''">
+				AND a.name = #{user.name}
+			</if>
+			<if test="user.auth != null and user.auth != ''">
+				AND a.auth = #{user.auth}
+			</if>
+			AND a.password = #{user.password}
+		</where>
+    </select>
+</mapper>

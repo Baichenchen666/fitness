@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.WordMapper">
+    
+    <sql id="table_name">word</sql>
+    
+	<sql id="wordColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.createtime AS "createtime",
+		a.createid AS "createid",
+		a.createname AS "createname",
+		a.reply AS "reply",
+		a.replytime AS "replytime",
+		a.replyid AS "replyid",
+		a.replyname AS "replyname"
+	</sql>
+	
+	<sql id="wordJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Word">
+		SELECT 
+			<include refid="wordColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="wordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Word">
+		SELECT 
+			<include refid="wordColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="wordJoins"/>
+		<where>
+			
+			<if test="word.createid != null and word.createid != ''">
+				AND a.createid = #{word.createid}
+			</if>
+			<if test="word.replyid != null and word.replyid != ''">
+				AND a.replyid = #{word.replyid}
+			</if>
+		</where>
+		ORDER BY a.id ASC
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Word">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			content,
+			createtime,
+			createid,
+			createname,
+			reply,
+			replytime,
+			replyid,
+			replyname
+		) VALUES (
+			#{id},
+			#{content},
+			#{createtime},
+			#{createid},
+			#{createname},
+			#{reply},
+			#{replytime},
+			#{replyid},
+			#{replyname}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Word">
+		UPDATE <include refid="table_name"/> SET 	
+			content = #{content},
+			createtime = #{createtime},
+			createid = #{createid},
+			createname = #{createname}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 修改sql语句 -->
+	<update id="reply" parameterType="com.graduate.bean.Word">
+		UPDATE <include refid="table_name"/> SET 	
+			reply = #{reply},
+			replytime = #{replytime},
+			replyid = #{replyid},
+			replyname = #{replyname}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

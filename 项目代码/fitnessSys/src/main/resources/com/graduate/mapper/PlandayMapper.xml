@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.graduate.mapper.PlandayMapper">
+    
+    <sql id="table_name">planday</sql>
+    
+	<sql id="plandayColumns">
+		a.id AS "id",
+		a.planid AS "planid",
+		a.day AS "day",
+		a.act AS "act",
+		a.groups AS "groups",
+		a.number AS "number",
+		a.secs AS "secs"
+	</sql>
+	
+	<sql id="plandayJoins">
+	</sql>
+    
+    <!-- 根据id查询sql语句 -->
+	<select id="get" resultType="com.graduate.bean.Planday">
+		SELECT 
+			<include refid="plandayColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="plandayJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 查询列表sql语句 -->
+	<select id="findList" resultType="com.graduate.bean.Planday">
+		SELECT 
+			<include refid="plandayColumns"/>
+		FROM <include refid="table_name"/> a
+		<include refid="plandayJoins"/>
+		<where>
+			
+			<if test="planday.planid != null and planday.planid != ''">
+				AND a.planid = #{planday.planid}
+			</if>
+		</where>
+		ORDER BY a.day, a.act
+	</select>
+	
+	<!-- 新增sql语句 -->
+	<insert id="insert" parameterType="com.graduate.bean.Planday">
+		INSERT INTO <include refid="table_name"/>(
+			id,
+			planid,
+			day,
+			act,
+			groups,
+			number,
+			secs
+		) VALUES (
+			#{id},
+			#{planid},
+			#{day},
+			#{act},
+			#{groups},
+			#{number},
+			#{secs}
+		)
+	</insert>
+	
+	<!-- 修改sql语句 -->
+	<update id="update" parameterType="com.graduate.bean.Planday">
+		UPDATE <include refid="table_name"/> SET 	
+			planid = #{planid},
+			day = #{day},
+			act = #{act},
+			groups = #{groups},
+			number = #{number},
+			secs = #{secs}
+		WHERE id = #{id, jdbcType = VARCHAR}
+	</update>
+	
+	<!-- 删除sql语句 -->
+	<update id="delete">
+		DELETE FROM <include refid="table_name"/>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
